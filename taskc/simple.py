@@ -13,6 +13,7 @@ def connect(client_cert, client_key, server, port=53589, cacert=None):
     c.load_cert_chain(client_cert, client_key)
     if cacert:
         c.load_verify_locations(cacert)
+    #enable for non-selfsigned certs
     c.check_hostname = False
     conn = c.wrap_socket(socket.socket(socket.AF_INET))
     conn.connect((server, port))
@@ -39,7 +40,7 @@ def manual():
 conn = manual()
 msg = transaction.mk_message("Public", "Jack Laxson", "f60bfcb9-b7b8-4466-b4c1-7276b8afe609")
 msg['type'] = "statistics"
-our_len = long(len(msg.as_string()) + 4)
+our_len = len(msg.as_string()) + 4
 size = struct.pack('>L', our_len)
 conn.sendall(size+msg.as_string())
 
