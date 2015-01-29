@@ -22,13 +22,11 @@ class Status(object):
     }
 
     def __init__(self, code):
-        self.code = code
+        self.code = int(code)
 
     def __str__(self):
-        return """Status: {}
-                  Explanation: {}
-                """.format(code, status_table[code])  # ok because of int use
+        return "Status: {} \nExplanation: {}".format(self.code, self.status_table[self.code])  # ok because of int use
 
 
-class Error(Status, Exeption):
+class Error(Status, Exception):
     pass
