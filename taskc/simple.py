@@ -25,9 +25,9 @@ class TaskdConnection(object):
 
     def connect(self):
         c = ssl.create_default_context()
-        c.load_cert_chain(client_cert, client_key)
+        c.load_cert_chain(self.client_cert, self.client_key)
         if self.cacert:
-            c.load_verify_locations(cacert)
+            c.load_verify_locations(self.cacert)
         # enable for non-selfsigned certs
         # print conn.getpeercert()
         c.check_hostname = False
@@ -35,7 +35,7 @@ class TaskdConnection(object):
         self.conn.connect((self.server, self.port))
 
     def recv(self):
-        a = conn.recv(4096)
+        a = self.conn.recv(4096)
         print struct.unpack('>L', a[:4])[0], "Byte Response"
         resp = email.message_from_string(a[4:])
 
@@ -71,4 +71,5 @@ def manual():
 # embed()
 if __name__ == '__main__':
     taskd = manual()
-    taskd.stats()
+    taskd.connect()
+    print taskd.stats()
