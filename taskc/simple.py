@@ -33,12 +33,6 @@ class TaskdConnection(object):
         self.conn = c.wrap_socket(socket.socket(socket.AF_INET))
         self.conn.connect((self.server, self.port))
 
-    def stats(self):
-        msg = transaction.mk_message(self.group, self.username, self.uuid)
-        msg['type'] = "statistics"
-        self.conn.sendall(transaction.prep_message(msg))
-        return self.recv()
-
     def recv(self):
         a = conn.recv(4096)
         print struct.unpack('>L',a[:4])[0], "Byte Response"
@@ -51,6 +45,13 @@ class TaskdConnection(object):
             if int(resp['code']) == 200:
                 print "Status Good!"
         return resp
+
+    def stats(self):
+        msg = transaction.mk_message(self.group, self.username, self.uuid)
+        msg['type'] = "statistics"
+        self.conn.sendall(transaction.prep_message(msg))
+        return self.recv()
+
 
 def manual():
     # Task 2.3.0 doesn't let you have a cacert if you enable trust
