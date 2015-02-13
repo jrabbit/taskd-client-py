@@ -9,25 +9,26 @@ import errors
 
 
 class TaskdConnection(object):
+
     def __init__(self):
         self.port = 53589
-    
+
     def from_taskrc(self):
         conf = dict([x.replace("\\/", "/").strip().split('=') for x in open(
             os.path.expanduser("~/.taskrc")).readlines() if '=' in x and x[0] != "#"])
-        self.client_cert=conf['taskd.certificate']
-        self.client_key=conf['taskd.key']
-        self.server=conf['taskd.server'].split(":")[0]
-        self.port=int(conf['taskd.server'].split(":")[1])
-        self.cacert=conf['taskd.ca'] if 'taskd.ca' in conf else None
+        self.client_cert = conf['taskd.certificate']
+        self.client_key = conf['taskd.key']
+        self.server = conf['taskd.server'].split(":")[0]
+        self.port = int(conf['taskd.server'].split(":")[1])
+        self.cacert = conf['taskd.ca'] if 'taskd.ca' in conf else None
         self.group, self.username, self.uuid = conf['taskd.credentials'].split("/")
-    
+
     def connect(self):
         c = ssl.create_default_context()
         c.load_cert_chain(client_cert, client_key)
         if self.cacert:
             c.load_verify_locations(cacert)
-        #enable for non-selfsigned certs
+        # enable for non-selfsigned certs
         # print conn.getpeercert()
         c.check_hostname = False
         self.conn = c.wrap_socket(socket.socket(socket.AF_INET))
@@ -35,7 +36,7 @@ class TaskdConnection(object):
 
     def recv(self):
         a = conn.recv(4096)
-        print struct.unpack('>L',a[:4])[0], "Byte Response"
+        print struct.unpack('>L', a[:4])[0], "Byte Response"
         resp = email.message_from_string(a[4:])
 
         if 'code' in resp:
@@ -53,15 +54,21 @@ class TaskdConnection(object):
         return self.recv()
 
 
+
 def manual():
     # Task 2.3.0 doesn't let you have a cacert if you enable trust
-    return connect(client_cert="/home/jack/.task/jacklaxson.cert.pem",
-        client_key="/home/jack/.task/jacklaxson.key.pem",
-        cacert="/home/jack/.task/ca.cert.pem",
-        server="192.168.1.110",
-        )
+    tc = TaskdConnection()
+    tc.client_cert = "/home/jack/.task/jacklaxson.cert.pem"
+    tc.client_key = "/home/jack/.task/jacklaxson.key.pem"
+    tc.cacert = "/home/jack/.task/ca.cert.pem"
+    tc.server = "192.168.1.110"
+    tc.group = "Public"
+    tc.username = "Jack Laxson"
+    tc.uuid = "f60bfcb9-b7b8-4466-b4c1-7276b8afe609"
+    return tc
 
 # from IPython import embed
 # embed()
 if __name__ == '__main__':
-    pass
+    taskd = manual()
+    taskd.stats()
