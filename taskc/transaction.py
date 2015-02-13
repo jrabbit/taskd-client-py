@@ -1,4 +1,5 @@
 from email.message import Message
+import struct
 
 def mk_message(org, user, key):
     m = Message()
