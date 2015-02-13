@@ -53,7 +53,11 @@ class TaskdConnection(object):
         self.conn.sendall(transaction.prep_message(msg))
         return self.recv()
 
-
+    def pull(self):
+        msg = transaction.mk_message(self.group, self.username, self.uuid)
+        msg['type'] = "sync"
+        self.conn.sendall(transaction.prep_message(msg))
+        return self.recv()
 
 def manual():
     # Task 2.3.0 doesn't let you have a cacert if you enable trust
@@ -72,4 +76,4 @@ def manual():
 if __name__ == '__main__':
     taskd = manual()
     taskd.connect()
-    print taskd.stats()
+    print taskd.pull()
