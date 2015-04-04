@@ -27,9 +27,9 @@ class TaskdConnection(object):
     def connect(self):
         "Actually open the socket"
         c = ssl.create_default_context()
-        c.load_cert_chain(self.client_cert, self.client_key)
+        c.load_cert_chain(self.client_cert, keyfile=self.client_key)
         if self.cacert:
-            c.load_verify_locations(self.cacert)
+            c.load_verify_locations(cafile=self.cacert)
         # enable for non-selfsigned certs
         # print conn.getpeercert()
         c.check_hostname = False
@@ -70,7 +70,7 @@ def manual():
     tc.client_cert = "/home/jack/.task/jacklaxson.cert.pem"
     tc.client_key = "/home/jack/.task/jacklaxson.key.pem"
     tc.cacert = "/home/jack/.task/ca.cert.pem"
-    tc.server = "192.168.1.110"
+    tc.server = "192.168.1.112"
     tc.group = "Public"
     tc.username = "Jack Laxson"
     tc.uuid = "f60bfcb9-b7b8-4466-b4c1-7276b8afe609"
