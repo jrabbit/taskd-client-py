@@ -1,7 +1,8 @@
 taskd-client-py
 ===============
+[![Code Health](https://landscape.io/github/jrabbit/taskd-client-py/master/landscape.svg?style=flat)](https://landscape.io/github/jrabbit/taskd-client-py/master)
 
-A client library providing an interface to [Taskd (from taskwarrior)](http://tasktools.org/)
+A client library providing an interface to [Taskd (from taskwarrior)](http://tasktools.org/projects/taskd.html)
 
 Library users will have some obligations as per the protocol. (key storage, sync key, tasks themselves (and additional data), etc)
 

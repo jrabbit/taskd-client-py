@@ -13,9 +13,10 @@ class TaskdConnection(object):
     def __init__(self):
         self.port = 53589
 
-    def from_taskrc(self):
+    def from_taskrc(self, f="~/.taskrc"):
+        "Set all the required variables from a taskrc file"
         conf = dict([x.replace("\\/", "/").strip().split('=') for x in open(
-            os.path.expanduser("~/.taskrc")).readlines() if '=' in x and x[0] != "#"])
+            os.path.expanduser(f)).readlines() if '=' in x and x[0] != "#"])
         self.client_cert = conf['taskd.certificate']
         self.client_key = conf['taskd.key']
         self.server = conf['taskd.server'].split(":")[0]
@@ -24,6 +25,7 @@ class TaskdConnection(object):
         self.group, self.username, self.uuid = conf['taskd.credentials'].split("/")
 
     def connect(self):
+        "Actually open the socket"
         c = ssl.create_default_context()
         c.load_cert_chain(self.client_cert, self.client_key)
         if self.cacert:
@@ -35,6 +37,7 @@ class TaskdConnection(object):
         self.conn.connect((self.server, self.port))
 
     def recv(self):
+        "Parse out the size header & read the message"
         a = self.conn.recv(4096)
         print struct.unpack('>L', a[:4])[0], "Byte Response"
         resp = email.message_from_string(a[4:])
@@ -48,12 +51,14 @@ class TaskdConnection(object):
         return resp
 
     def stats(self):
+        """Get some statistics from the server"""
         msg = transaction.mk_message(self.group, self.username, self.uuid)
         msg['type'] = "statistics"
         self.conn.sendall(transaction.prep_message(msg))
         return self.recv()
 
     def pull(self):
+        """Get all the tasks down from the server"""
         msg = transaction.mk_message(self.group, self.username, self.uuid)
         msg['type'] = "sync"
         self.conn.sendall(transaction.prep_message(msg))
@@ -71,8 +76,7 @@ def manual():
     tc.uuid = "f60bfcb9-b7b8-4466-b4c1-7276b8afe609"
     return tc
 
-# from IPython import embed
-# embed()
+
 if __name__ == '__main__':
     taskd = manual()
     taskd.connect()
