@@ -40,7 +40,8 @@ class TaskdConnection(object):
         "Parse out the size header & read the message"
         a = self.conn.recv(4096)
         print struct.unpack('>L', a[:4])[0], "Byte Response"
-        resp = email.message_from_string(a[4:], _class=transaction.TaskdResponse)
+        resp = email.message_from_string(
+            a[4:], _class=transaction.TaskdResponse)
 
         if 'code' in resp:
             # print errors.Status(resp['code'])
@@ -70,6 +71,7 @@ class TaskdConnection(object):
 
     def sync(self, sync_key):
         """Sync our tasks and server's, takes sync_key (uuid debounce from previous txn)"""
+        pass
 
 def manual():
     # Task 2.3.0 doesn't let you have a cacert if you enable trust
