@@ -48,7 +48,7 @@ class TaskdConnection(object):
                 raise errors.Error(resp['code'])
             if int(resp['code']) == 200:
                 print "Status Good!"
-        return resp
+        return resp.as_string()
 
     def stats(self):
         """Get some statistics from the server"""
