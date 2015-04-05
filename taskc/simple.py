@@ -51,18 +51,19 @@ class TaskdConnection(object):
                 print "Status Good!"
         return resp
 
+    def _mkmsg(self, ttype):
+        msg = transaction.mk_message(self.group, self.username, self.uuid)
+        msg['type'] = ttype
+        return transaction.prep_message(msg)
+
     def stats(self):
         """Get some statistics from the server"""
-        msg = transaction.mk_message(self.group, self.username, self.uuid)
-        msg['type'] = "statistics"
-        self.conn.sendall(transaction.prep_message(msg))
+        self.conn.sendall(self._mkmsg("statistics"))
         return self.recv()
 
     def pull(self):
         """Get all the tasks down from the server"""
-        msg = transaction.mk_message(self.group, self.username, self.uuid)
-        msg['type'] = "sync"
-        self.conn.sendall(transaction.prep_message(msg))
+        self.conn.sendall(self._mkmsg("sync"))
         return self.recv()
 
     def put(self):

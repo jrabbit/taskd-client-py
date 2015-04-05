@@ -33,16 +33,16 @@ class TaskdResponse(Message):
     @property
     def data(self):
         "front bit of payload"
-        return self.get_payload().strip().split()[:-1]
+        return self.get_payload().strip().split("\n")[:-1]
     @property
     def sync_key(self):
         "last bit of payload"
-        return self.get_payload().strip().split()[-1]
+        return self.get_payload().strip().split("\n")[-1]
     @property
     def status_code(self):
-        return self.get("code")
+        return int(self.get("code"))
 
     def raise_for_status(self):
         "Ala requests"
         if 400 <= self.status_code < 600:
-            raise TaskdError
+            raise TaskdError(self.status_code)

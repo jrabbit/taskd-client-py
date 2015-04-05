@@ -8,7 +8,7 @@ class TestConnection(unittest.TestCase):
         self.tc = TaskdConnection()
 
     def test_rc(self):
-        self.tc.from_taskrc("~/Projects/taskd-client-py/taskc/fixture/.taskrc")
+        self.tc.from_taskrc("taskc/fixture/.taskrc")
 
         self.assertEqual(
             self.tc.client_cert, "/home/jack/.task/jacklaxson.cert.pem")
@@ -22,7 +22,7 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(self.tc.uuid, "f60bfcb9-b7b8-4466-b4c1-7276b8afe609")
 
     def test_connect(self):
-        self.tc.from_taskrc("~/Projects/taskd-client-py/taskc/fixture/.taskrc")
+        self.tc.from_taskrc("taskc/fixture/.taskrc")
 
         self.tc.connect()
         self.assertEqual(self.tc.conn.getpeername(), ('192.168.1.112', 53589))
