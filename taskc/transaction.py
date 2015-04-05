@@ -1,5 +1,6 @@
 from email.message import Message
 import struct
+from errors import TaskdError
 
 def mk_message(org, user, key):
     m = Message()
@@ -22,3 +23,26 @@ class Transaction(object):
     message.  All communication therefore consists of a single 'send', followed
     by a single 'receive', then termination."""
     pass
+
+class TaskdResponse(Message):
+
+    """docstring for TaskdResponse"""
+    def __init__(self):
+        Message.__init__(self)
+
+    @property
+    def data(self):
+        "front bit of payload"
+        return self.get_payload().strip().split()[:-1]
+    @property
+    def sync_key(self):
+        "last bit of payload"
+        return self.get_payload().strip().split()[-1]
+    @property
+    def status_code(self):
+        return self.get("code")
+
+    def raise_for_status(self):
+        "Ala requests"
+        if 400 <= self.status_code < 600:
+            raise TaskdError

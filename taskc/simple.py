@@ -40,7 +40,7 @@ class TaskdConnection(object):
         "Parse out the size header & read the message"
         a = self.conn.recv(4096)
         print struct.unpack('>L', a[:4])[0], "Byte Response"
-        resp = email.message_from_string(a[4:])
+        resp = email.message_from_string(a[4:], _class=transaction.TaskdResponse)
 
         if 'code' in resp:
             # print errors.Status(resp['code'])
@@ -48,7 +48,7 @@ class TaskdConnection(object):
                 raise errors.Error(resp['code'])
             if int(resp['code']) == 200:
                 print "Status Good!"
-        return resp.as_string()
+        return resp
 
     def stats(self):
         """Get some statistics from the server"""
@@ -63,6 +63,13 @@ class TaskdConnection(object):
         msg['type'] = "sync"
         self.conn.sendall(transaction.prep_message(msg))
         return self.recv()
+
+    def put(self):
+        """Push all our tasks to server"""
+        pass
+
+    def sync(self, sync_key):
+        """Sync our tasks and server's, takes sync_key (uuid debounce from previous txn)"""
 
 def manual():
     # Task 2.3.0 doesn't let you have a cacert if you enable trust
@@ -80,4 +87,6 @@ def manual():
 if __name__ == '__main__':
     taskd = manual()
     taskd.connect()
-    print taskd.pull()
+    print taskd.pull().as_string()
+    from IPython import embed
+    embed()

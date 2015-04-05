@@ -28,5 +28,5 @@ class Status(object):
         return "Status: {} \nExplanation: {}".format(self.code, self.status_table[self.code])  # ok because of int use
 
 
-class Error(Status, Exception):
+class TaskdError(Status, Exception):
     pass
