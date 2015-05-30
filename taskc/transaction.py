@@ -43,7 +43,7 @@ class TaskdResponse(Message):
         return int(self.get("code"))
     @property
     def status(self):
-        return self.status_code()
+        return self.status_code
 
     def raise_for_status(self):
         "Ala requests"
