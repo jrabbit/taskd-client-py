@@ -22,8 +22,8 @@ class TaskdConnection(object):
             os.path.expanduser(f)).readlines() if '=' in x and x[0] != "#"])
         self.client_cert = conf['taskd.certificate']
         self.client_key = conf['taskd.key']
-        self.server = conf['taskd.server'].split(":")[0]
-        self.port = int(conf['taskd.server'].split(":")[1])
+        self.server = conf['taskd.server'].split(":")[-2]
+        self.port = int(conf['taskd.server'].split(":")[-1])
         self.cacert_file = conf['taskd.ca'] if 'taskd.ca' in conf else None
         self.group, self.username, self.uuid = conf['taskd.credentials'].split("/")
         return self
