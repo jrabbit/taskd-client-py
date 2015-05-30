@@ -41,8 +41,15 @@ class TaskdResponse(Message):
     @property
     def status_code(self):
         return int(self.get("code"))
+    @property
+    def status(self):
+        return self.status_code()
 
     def raise_for_status(self):
         "Ala requests"
         if 400 <= self.status_code < 600:
             raise TaskdError(self.status_code)
+
+    def __str__(self):
+        return "Response: %s" % self.get('status')
+

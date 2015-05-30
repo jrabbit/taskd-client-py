@@ -3,6 +3,7 @@ import socket
 import struct
 import email
 import os.path
+import logging
 
 import transaction
 import errors
@@ -12,6 +13,8 @@ class TaskdConnection(object):
 
     def __init__(self):
         self.port = 53589
+        self.cacert_file = False
+        self.cacert = False
 
     def from_taskrc(self, f="~/.taskrc"):
         "Set all the required variables from a taskrc file"
@@ -21,15 +24,19 @@ class TaskdConnection(object):
         self.client_key = conf['taskd.key']
         self.server = conf['taskd.server'].split(":")[0]
         self.port = int(conf['taskd.server'].split(":")[1])
-        self.cacert = conf['taskd.ca'] if 'taskd.ca' in conf else None
+        self.cacert_file = conf['taskd.ca'] if 'taskd.ca' in conf else None
         self.group, self.username, self.uuid = conf['taskd.credentials'].split("/")
+        return self
 
     def connect(self):
         "Actually open the socket"
         c = ssl.create_default_context()
         c.load_cert_chain(self.client_cert, keyfile=self.client_key)
-        if self.cacert:
-            c.load_verify_locations(cafile=self.cacert)
+        if self.cacert_file:
+            c.load_verify_locations(cafile=self.cacert_file)
+        elif self.cacert:
+            print self.cacert
+            c.load_verify_locations(cadata=self.cacert)
         # enable for non-selfsigned certs
         # print conn.getpeercert()
         c.check_hostname = False
@@ -39,7 +46,8 @@ class TaskdConnection(object):
     def recv(self):
         "Parse out the size header & read the message"
         a = self.conn.recv(4096)
-        print struct.unpack('>L', a[:4])[0], "Byte Response"
+        logging.info("%s Byte Response", struct.unpack('>L', a[:4])[0])
+        logging.debug(a)
         resp = email.message_from_string(
             a[4:], _class=transaction.TaskdResponse)
 
@@ -66,9 +74,16 @@ class TaskdConnection(object):
         self.conn.sendall(self._mkmsg("sync"))
         return self.recv()
 
-    def put(self):
-        """Push all our tasks to server"""
-        pass
+    def put(self, tasks):
+        """Push all our tasks to server
+           tasks - taskjson list
+        """
+        msg = transaction.mk_message(self.group, self.username, self.uuid)
+        msg['payload'] = tasks
+        msg['type'] = 'sync'
+        tx_msg = transaction.prep_message(msg)
+        self.conn.sendall(tx_msg)
+        return self.recv()
 
     def sync(self, sync_key):
         """Sync our tasks and server's, takes sync_key (uuid debounce from previous txn)"""
@@ -79,15 +94,16 @@ def manual():
     tc = TaskdConnection()
     tc.client_cert = "/home/jack/.task/jacklaxson.cert.pem"
     tc.client_key = "/home/jack/.task/jacklaxson.key.pem"
-    tc.cacert = "/home/jack/.task/ca.cert.pem"
-    tc.server = "192.168.1.112"
+    tc.cacert_file = "/home/jack/.task/ca.cert.pem"
+    tc.server = "iceking.local"
     tc.group = "Public"
-    tc.username = "Jack Laxson"
-    tc.uuid = "f60bfcb9-b7b8-4466-b4c1-7276b8afe609"
+    tc.username = "foobar"
+    tc.uuid = "730b7377-e548-4cd5-a6b4-5cdbc2696e85"
     return tc
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     taskd = manual()
     taskd.connect()
     print taskd.pull().as_string()

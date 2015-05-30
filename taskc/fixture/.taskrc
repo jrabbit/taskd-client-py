@@ -27,7 +27,7 @@ data.location=~/.task
 
 taskd.certificate=\/home\/jack\/.task\/jacklaxson.cert.pem
 taskd.key=\/home\/jack\/.task\/jacklaxson.key.pem
-taskd.server=192.168.1.112:53589
+taskd.server=192.168.1.129:53589
 taskd.credentials=Public\/Jack Laxson\/f60bfcb9-b7b8-4466-b4c1-7276b8afe609
 taskd.trust=yes
 taskd.ca=\/home\/jack\/.task\/ca.cert.pem
