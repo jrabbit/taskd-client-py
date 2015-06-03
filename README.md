@@ -7,6 +7,18 @@ A client library providing an interface to [Taskd (from taskwarrior)](http://tas
 
 Library users will have some obligations as per the protocol. (key storage, sync key, tasks themselves (and additional data), etc)
 
+
+Getting Started
+---------------
+* `pip install taskc`
+```python 
+from taskc.simple import TaskdConnection
+tc = TaskdConnection()
+tc.from_taskrc() # only works if you have taskwarrior setup
+tc.connect()
+resp = tc.pull()
+```
+
 User considerations
 -------------------
 * For taskd < 1.1.0 set `client.allow` in your taskd config ex: `client.allow=^task [2-9],^Mirakel [1-9],^taskc-py [0-9]`
