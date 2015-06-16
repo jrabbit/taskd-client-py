@@ -54,7 +54,7 @@ class TaskdConnection(object):
         if 'code' in resp:
             # print errors.Status(resp['code'])
             if int(resp['code']) >= 400:
-                raise errors.Error(resp['code'])
+                print resp['code']
             if int(resp['code']) == 200:
                 print "Status Good!"
         return resp
@@ -79,7 +79,7 @@ class TaskdConnection(object):
            tasks - taskjson list
         """
         msg = transaction.mk_message(self.group, self.username, self.uuid)
-        msg['payload'] = tasks
+        msg.set_payload(tasks)
         msg['type'] = 'sync'
         tx_msg = transaction.prep_message(msg)
         self.conn.sendall(tx_msg)

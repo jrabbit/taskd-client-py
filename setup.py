@@ -2,7 +2,7 @@
 
 from setuptools import setup
 setup(name="taskc",
-      version="0.0.1a2",
+      version="0.0.2a1",
       packages=["taskc"],
       author="Jack Laxson",
       author_email="jackjrabbit@gmail.com",

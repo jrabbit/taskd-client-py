@@ -4,7 +4,7 @@ from errors import TaskdError
 
 def mk_message(org, user, key):
     m = Message()
-    m['client'] = "taskc-py 0.0.1a1"
+    m['client'] = "taskc-py 0.0.2"
     m['protocol'] = "v1"
     m['org'] = org
     m['user'] = user
@@ -17,12 +17,6 @@ def prep_message(msg):
     size = struct.pack('>L', our_len)
     return size+msg.as_string()
 
-
-class Transaction(object):
-    """ Each transaction is a single incoming message, with a single response
-    message.  All communication therefore consists of a single 'send', followed
-    by a single 'receive', then termination."""
-    pass
 
 class TaskdResponse(Message):
 
