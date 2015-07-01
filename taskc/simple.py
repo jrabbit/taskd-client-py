@@ -45,11 +45,13 @@ class TaskdConnection(object):
 
     def recv(self):
         "Parse out the size header & read the message"
-        a = self.conn.recv(4096)
-        logging.info("%s Byte Response", struct.unpack('>L', a[:4])[0])
-        logging.debug(a)
+        a = self.conn.recv(4)
+        bytez = struct.unpack('>L', a[:4])[0]
+        msg = self.conn.recv(bytez)
+        logging.info("%s Byte Response", bytez)
+        logging.debug(msg)
         resp = email.message_from_string(
-            a[4:], _class=transaction.TaskdResponse)
+            msg, _class=transaction.TaskdResponse)
 
         if 'code' in resp:
             # print errors.Status(resp['code'])
