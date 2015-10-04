@@ -85,7 +85,7 @@ class TaskdConnection(object):
         msg = self.conn.recv(bytes)
 
         # logging data
-        logging.info("%s Byte Response", bytez)
+        logging.info("%s Byte Response", bytes)
         logging.debug(msg)
 
         # parse the response
