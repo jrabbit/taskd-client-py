@@ -5,10 +5,9 @@ from simple import TaskdConnection
 class TestConnection(unittest.TestCase):
 
     def setUp(self):
-        self.tc = TaskdConnection()
+        self.tc = TaskdConnection.from_taskrc("taskc/fixture/.taskrc")
 
     def test_rc(self):
-        self.tc.from_taskrc("taskc/fixture/.taskrc")
         self.assertEqual(
             self.tc.client_cert, "/home/jack/.task/jacklaxson.cert.pem")
         self.assertEqual(
@@ -21,7 +20,6 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(self.tc.uuid, "f60bfcb9-b7b8-4466-b4c1-7276b8afe609")
 
     def test_connect(self):
-        self.tc.from_taskrc("taskc/fixture/.taskrc")
 
         self.tc.connect()
         self.assertEqual(self.tc.conn.getpeername(), ('192.168.1.129', 53589))
@@ -30,8 +28,8 @@ class TestConnection(unittest.TestCase):
         self.tc.conn.close()
         # from IPython import embed
         # embed()
+
     def test_put(self):
-        self.tc.from_taskrc("taskc/fixture/.taskrc")
         self.tc.connect()
         self.tc.put("")
         self.tc.connect()
@@ -39,7 +37,8 @@ class TestConnection(unittest.TestCase):
 {"description":"make pb ramen","entry":"20141130T081700Z","status":"pending","uuid":"dd9b71db-f51c-4026-9e46-bb099df8dd3f"}
 {"description":"fold clothes","entry":"20141130T081709Z","status":"pending","uuid":"d0f53865-2f01-42a8-9f9e-3652c63f216d"}"""
         resp = self.tc.put(tasks)
-        self.assertEqual(resp.status_code, 200) #might not be correct depends on state of taskd
+        self.assertEqual(resp.status_code, 200)
+                         #might not be correct depends on state of taskd
 
 
 if __name__ == '__main__':
