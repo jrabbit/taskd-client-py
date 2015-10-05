@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
 from setuptools import setup
+from taskc import __version__
 setup(name="taskc",
-      version="0.0.2a2",
+      version=__version__,
       packages=["taskc"],
       author="Jack Laxson",
       author_email="jackjrabbit@gmail.com",

@@ -1,5 +1,6 @@
 from email.message import Message
 import struct
+from taskc import __version__
 
 from errors import TaskdError
 
@@ -10,7 +11,7 @@ def mk_message(org, user, key):
     """
 
     m = Message()
-    m['client'] = "taskc-py 0.0.2"
+    m['client'] = "taskc-py {0}".format(__version__)
     m['protocol'] = "v1"
     m['org'] = org
     m['user'] = user
