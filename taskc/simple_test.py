@@ -1,8 +1,9 @@
 import unittest
+import os
 from simple import TaskdConnection
 
 
-class TestConnection(unittest.TestCase):
+class TestRCParse(unittest.TestCase):
 
     def setUp(self):
         self.tc = TaskdConnection.from_taskrc("taskc/fixture/.taskrc")
@@ -19,10 +20,24 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(self.tc.username, "Jack Laxson")
         self.assertEqual(self.tc.uuid, "f60bfcb9-b7b8-4466-b4c1-7276b8afe609")
 
+class TestConnection(unittest.TestCase):
+
+    def setUp(self):
+        self.tc = TaskdConnection()
+        self.tc.server = "localhost"
+        self.tc.port = 53589
+        self.tc.uuid = os.getenv("TEST_UUID")
+        self.tc.group = "Public"
+        self.tc.username = "test_user"
+        self.tc.client_cert = "taskc/fixture/pki/client.cert.pem"
+        self.tc.client_key = "taskc/fixture/pki/client.key.pem"
+        self.tc.cacert_file = "taskc/fixture/pki/ca.cert.pem"
+
     def test_connect(self):
 
         self.tc.connect()
-        self.assertEqual(self.tc.conn.getpeername(), ('192.168.1.129', 53589))
+        # print self.tc.conn.getpeername()
+        self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', 53589))
         # make sure we're on TLS v2 per spec
         self.assertEqual(self.tc.conn.context.protocol, 2)
         self.tc.conn.close()
@@ -30,6 +45,7 @@ class TestConnection(unittest.TestCase):
         # embed()
 
     def test_put(self):
+
         self.tc.connect()
         self.tc.put("")
         self.tc.connect()
