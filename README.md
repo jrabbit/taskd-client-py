@@ -14,7 +14,7 @@ Getting Started
 ```python 
 from taskc.simple import TaskdConnection
 tc = TaskdConnection()
-tc.from_taskrc() # only works if you have taskwarrior setup
+tc = TaskdConnection.from_taskrc() # only works if you have taskwarrior setup
 tc.connect()
 resp = tc.pull()
 ```
