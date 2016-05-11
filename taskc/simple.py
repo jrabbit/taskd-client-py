@@ -8,6 +8,7 @@ import logging
 import transaction
 import errors
 
+logger = logging.getLogger(__name__)
 
 class TaskdConnection(object):
 
@@ -79,8 +80,9 @@ class TaskdConnection(object):
 
         # Read the number of bytes of the message
         # ">L" is 4 bytes long in big endian
+        logger.debug("struct size: %s", a)
         bytes = struct.unpack('>L', a[:4])[0]
-
+        logger.debug("Parsed %d bytes to recieve", bytes)
         # Read the message itself
         msg = self.conn.recv(bytes)
 
