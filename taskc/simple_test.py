@@ -25,7 +25,7 @@ class TestConnection(unittest.TestCase):
     def setUp(self):
         self.tc = TaskdConnection()
         self.tc.server = "localhost"
-        self.tc.port = 53589
+        self.tc.port = 9001
         self.tc.uuid = os.getenv("TEST_UUID")
         self.tc.group = "Public"
         self.tc.username = "test_user"
@@ -37,7 +37,7 @@ class TestConnection(unittest.TestCase):
 
         self.tc.connect()
         # print self.tc.conn.getpeername()
-        self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', 53589))
+        self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', 9001))
         # make sure we're on TLS v2 per spec
         self.assertEqual(self.tc.conn.context.protocol, 2)
         self.tc.conn.close()
