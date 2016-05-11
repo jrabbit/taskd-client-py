@@ -158,25 +158,3 @@ class TaskdConnection(object):
         """
         pass
 
-
-# Should be deprecated soon
-def manual():
-    # Task 2.3.0 doesn't let you have a cacert if you enable trust
-    tc = TaskdConnection()
-    tc.client_cert = "/home/jack/.task/jacklaxson.cert.pem"
-    tc.client_key = "/home/jack/.task/jacklaxson.key.pem"
-    tc.cacert_file = "/home/jack/.task/ca.cert.pem"
-    tc.server = "iceking.local"
-    tc.group = "Public"
-    tc.username = "foobar"
-    tc.uuid = "730b7377-e548-4cd5-a6b4-5cdbc2696e85"
-    return tc
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
-    taskd = manual()
-    taskd.connect()
-    print taskd.pull().as_string()
-    from IPython import embed
-    embed()
