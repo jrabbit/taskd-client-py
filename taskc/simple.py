@@ -80,27 +80,32 @@ class TaskdConnection(object):
 
         # Read the number of bytes of the message
         # ">L" is 4 bytes long in big endian
-        logger.debug("struct size: %s", a)
         bytes = struct.unpack('>L', a[:4])[0]
-        logger.debug("Parsed %d bytes to recieve", bytes)
         # Read the message itself
-        msg = self.conn.recv(bytes)
+        # This approach assumes taskd responses will not be paged
+        chunks = []
+        bytes_recd = 0
+        while bytes_recd < bytes-4:
+            chunk = self.conn.recv(min(bytes - bytes_recd, 2048))
+            if chunk == '':
+                logger.error("socket connection broken")
+            chunks.append(chunk)
+            bytes_recd = bytes_recd + len(chunk)
+        msg = ''.join(chunks)
 
         # logging data
-        logging.info("%s Byte Response", bytes)
-        logging.debug(msg)
+        logger.info("%s Byte Response", bytes)
+        logger.debug(msg)
 
         # parse the response
         resp = email.message_from_string(
             msg, _class=transaction.TaskdResponse)
 
-        # TODO: This part should use logging
         if 'code' in resp:
-            # print errors.Status(resp['code'])
             if int(resp['code']) >= 400:
-                print resp['code']
+                logger.error("Status Bad! %s", resp['code'])
             if int(resp['code']) == 200:
-                print "Status Good!"
+                logger.info("Status Good!")
 
         return resp
 
