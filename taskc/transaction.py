@@ -1,8 +1,9 @@
-from email.message import Message
 import struct
-from taskc import __version__
+
+from email.message import Message
 
 from errors import TaskdError
+from taskc import __version__
 
 
 def mk_message(org, user, key):

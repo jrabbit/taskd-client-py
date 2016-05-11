@@ -1,14 +1,15 @@
-import ssl
+import logging
+import os.path
 import socket
 import struct
-import email
-import os.path
-import logging
 
-import transaction
+import email
 import errors
+import ssl
+import transaction
 
 logger = logging.getLogger(__name__)
+
 
 class TaskdConnection(object):
 
@@ -157,4 +158,3 @@ class TaskdConnection(object):
         Sync our tasks and server's, takes sync_key (uuid debounce from previous txn)
         """
         pass
-

@@ -20,6 +20,7 @@ class TestRCParse(unittest.TestCase):
         self.assertEqual(self.tc.username, "Jack Laxson")
         self.assertEqual(self.tc.uuid, "f60bfcb9-b7b8-4466-b4c1-7276b8afe609")
 
+
 class TestConnection(unittest.TestCase):
 
     def setUp(self):
@@ -54,8 +55,19 @@ class TestConnection(unittest.TestCase):
 {"description":"fold clothes","entry":"20141130T081709Z","status":"pending","uuid":"d0f53865-2f01-42a8-9f9e-3652c63f216d"}"""
         resp = self.tc.put(tasks)
         self.assertEqual(resp.status_code, 200)
-                         #might not be correct depends on state of taskd
+        # might not be correct depends on state of taskd
 
+# class TestStringIO(unittest.TestCase):
+#     def setUp(self):
+#         self.tc = TaskdConnection()
+#         self.tc.server = "localhost"
+#         self.tc.port = 53589
+#         self.tc.uuid = os.getenv("TEST_UUID")
+#         self.tc.group = "Public"
+#         self.tc.username = "test_user"
+#         self.tc.client_cert = "taskc/fixture/pki/client.cert.pem"
+#         self.tc.client_key = "taskc/fixture/pki/client.key.pem"
+#         self.tc.cacert_file = "taskc/fixture/pki/ca.cert.pem"
 
 if __name__ == '__main__':
     unittest.main()
