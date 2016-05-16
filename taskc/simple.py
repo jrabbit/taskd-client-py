@@ -18,6 +18,13 @@ class TaskdConnection(object):
         self.cacert_file = False
         self.cacert = False
 
+    def manage_connection(f):
+            def conn_wrapper(self, *args, **kwargs):
+                self._connect()
+                f(self, *args, **kwargs)
+                self._close()
+            return conn_wrapper
+
     @classmethod
     def from_taskrc(cls, taskrc="~/.taskrc", **kwargs):
         """
@@ -49,7 +56,7 @@ class TaskdConnection(object):
 
         return connection
 
-    def connect(self):
+    def _connect(self):
         """
         Actually open the socket
         """
@@ -120,12 +127,13 @@ class TaskdConnection(object):
 
         return transaction.prep_message(msg)
 
-    def close(self):
+    def _close(self):
         """
         Close the taskd connection when you're done!
         """
         self.conn.close()
 
+    @manage_connection
     def stats(self):
         """
         Get some statistics from the server
@@ -135,6 +143,7 @@ class TaskdConnection(object):
 
         return self.recv()
 
+    @manage_connection
     def pull(self):
         """
         Get all the tasks down from the server
@@ -144,6 +153,7 @@ class TaskdConnection(object):
 
         return self.recv()
 
+    @manage_connection
     def put(self, tasks):
         """
         Push all our tasks to server
