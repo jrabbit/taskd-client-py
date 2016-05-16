@@ -27,7 +27,7 @@ class TaskdConnection(object):
 
         taskrc: configuration file for taskwarrior
 
-        kwargs: arguments to passe to the constructor of TaskdConnection
+        kwargs: arguments to pass to the constructor of TaskdConnection
         """
 
         # Build TaskConnection object
@@ -119,6 +119,12 @@ class TaskdConnection(object):
         msg['type'] = ttype
 
         return transaction.prep_message(msg)
+
+    def close(self):
+        """
+        Close the taskd connection when you're done!
+        """
+        self.conn.close()
 
     def stats(self):
         """
