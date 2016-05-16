@@ -19,11 +19,11 @@ class TaskdConnection(object):
         self.cacert = False
 
     def manage_connection(f):
-            def conn_wrapper(self, *args, **kwargs):
-                self._connect()
-                f(self, *args, **kwargs)
-                self._close()
-            return conn_wrapper
+        def conn_wrapper(self, *args, **kwargs):
+            self._connect()
+            return f(self, *args, **kwargs)
+        self._close()
+        return conn_wrapper
 
     @classmethod
     def from_taskrc(cls, taskrc="~/.taskrc", **kwargs):
