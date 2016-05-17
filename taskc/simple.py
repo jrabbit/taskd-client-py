@@ -157,7 +157,7 @@ class TaskdConnection(object):
         """
         Push all our tasks to server
 
-        tasks: taskjson list
+        tasks: flat formatted taskjson according to spec
         """
 
         msg = transaction.mk_message(self.group, self.username, self.uuid)
