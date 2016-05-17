@@ -1,6 +1,6 @@
 import unittest
 import os
-
+import time
 from docker import Client
 
 from simple import TaskdConnection
@@ -28,29 +28,31 @@ class TestConnection(unittest.TestCase):
 
     def setUp(self):
         self.docker = Client(base_url='unix://var/run/docker.sock')
-        host_config = self.docker.create_host_config(port_bindings={53589:9001,},publish_all_ports=True)
+        host_config = self.docker.create_host_config(publish_all_ports=True)
         self.container = self.docker.create_container("jrabbit/taskd", name="taskc_test", host_config=host_config)
         self.docker.start(self.container["Id"])
         our_exec = self.docker.exec_create(self.container["Id"], "taskd add user Public test_user")
         self.tc = TaskdConnection()
         o = self.docker.exec_start(our_exec['Id'])
-        print o
+        # print o
         self.tc.uuid = o.split('\n')[0].split()[-1]
-        print self.tc.uuid
+        # print self.tc.uuid
         self.tc.server = "localhost"
-        self.tc.port = 9001
+        c = self.docker.inspect_container("taskc_test")
+        
+        self.tc.port = int(c['NetworkSettings']['Ports']['53589/tcp'][0]['HostPort'])
         # self.tc.uuid = os.getenv("TEST_UUID")
         self.tc.group = "Public"
         self.tc.username = "test_user"
         self.tc.client_cert = "taskc/fixture/pki/client.cert.pem"
         self.tc.client_key = "taskc/fixture/pki/client.key.pem"
         self.tc.cacert_file = "taskc/fixture/pki/ca.cert.pem"
-
+        time.sleep(2)
     def test_connect(self):
 
         self.tc._connect()
         # print self.tc.conn.getpeername()
-        self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', 9001))
+        self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', self.tc.port))
         # make sure we're on TLS v2 per spec
         self.assertEqual(self.tc.conn.context.protocol, 2)
         self.tc.conn.close()
@@ -67,8 +69,8 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         # might not be correct depends on state of taskd
     def tearDown(self):
-        # self.docker.remove_container(self.container['Id'], force=True)
-        pass
+        self.docker.remove_container(self.container['Id'], force=True)
+
 # class TestStringIO(unittest.TestCase):
 #     def setUp(self):
 #         self.tc = TaskdConnection()
