@@ -20,8 +20,9 @@ class TaskdConnection(object):
     def manage_connection(f):
         def conn_wrapper(self, *args, **kwargs):
             self._connect()
-            f(self, *args, **kwargs) # noqa
+            x = f(self, *args, **kwargs) # noqa
             self._close()
+            return x
         return conn_wrapper
 
     @classmethod
