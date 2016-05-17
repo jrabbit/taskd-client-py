@@ -36,7 +36,7 @@ class TestConnection(unittest.TestCase):
 
     def test_connect(self):
 
-        self.tc.connect()
+        self.tc._connect()
         # print self.tc.conn.getpeername()
         self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', 9001))
         # make sure we're on TLS v2 per spec
@@ -47,9 +47,7 @@ class TestConnection(unittest.TestCase):
 
     def test_put(self):
 
-        self.tc.connect()
         self.tc.put("")
-        self.tc.connect()
         tasks = """{"description":"hang up posters","entry":"20141130T081652Z","status":"pending","uuid":"0037aa92-45e5-44a6-8f34-2f92989f173a"}
 {"description":"make pb ramen","entry":"20141130T081700Z","status":"pending","uuid":"dd9b71db-f51c-4026-9e46-bb099df8dd3f"}
 {"description":"fold clothes","entry":"20141130T081709Z","status":"pending","uuid":"d0f53865-2f01-42a8-9f9e-3652c63f216d"}"""
