@@ -4,7 +4,6 @@ import socket
 import struct
 
 import email
-import errors
 import ssl
 import transaction
 
@@ -21,7 +20,7 @@ class TaskdConnection(object):
     def manage_connection(f):
         def conn_wrapper(self, *args, **kwargs):
             self._connect()
-            f(self, *args, **kwargs)
+            f(self, *args, **kwargs) # noqa
             self._close()
         return conn_wrapper
 
