@@ -1,6 +1,8 @@
 import unittest
 import os
 import time
+# import logging
+
 from docker import Client
 
 from simple import TaskdConnection
@@ -27,6 +29,7 @@ class TestRCParse(unittest.TestCase):
 class TestConnection(unittest.TestCase):
 
     def setUp(self):
+        # logging.basicConfig(level=logging.DEBUG)
         self.docker = Client(base_url='unix://var/run/docker.sock')
         host_config = self.docker.create_host_config(publish_all_ports=True)
         self.container = self.docker.create_container("jrabbit/taskd", name="taskc_test", host_config=host_config)
