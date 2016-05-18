@@ -20,8 +20,9 @@ class TaskdConnection(object):
     def manage_connection(f):
         def conn_wrapper(self, *args, **kwargs):
             self._connect()
-            f(self, *args, **kwargs) # noqa
+            x = f(self, *args, **kwargs) # noqa
             self._close()
+            return x
         return conn_wrapper
 
     @classmethod
@@ -157,7 +158,7 @@ class TaskdConnection(object):
         """
         Push all our tasks to server
 
-        tasks: taskjson list
+        tasks: flat formatted taskjson according to spec
         """
 
         msg = transaction.mk_message(self.group, self.username, self.uuid)
