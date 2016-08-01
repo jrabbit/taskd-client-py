@@ -66,6 +66,7 @@ class TaskdConnection(object):
         logger.info("Loading cert chain: %s, %s", self.client_cert, self.client_key)
         context.load_cert_chain(self.client_cert, keyfile=self.client_key)
         if self.cacert_file:
+            logger.info("Loading CA cert: %s", self.cacert_file)
             context.load_verify_locations(cafile=self.cacert_file)
         elif self.cacert:
             print self.cacert  # TODO: Replace prints with logging
