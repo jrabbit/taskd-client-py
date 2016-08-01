@@ -63,6 +63,7 @@ class TaskdConnection(object):
 
         # Initialize an SSL context
         context = ssl.create_default_context()
+        logger.info("Loading cert chain: %s, %s", self.client_cert, self.client_key)
         context.load_cert_chain(self.client_cert, keyfile=self.client_key)
         if self.cacert_file:
             context.load_verify_locations(cafile=self.cacert_file)
