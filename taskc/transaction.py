@@ -2,7 +2,7 @@ import struct
 
 from email.message import Message
 
-from errors import TaskdError
+from taskc.errors import TaskdError
 from taskc import __version__
 
 

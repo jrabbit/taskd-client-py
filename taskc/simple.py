@@ -5,7 +5,7 @@ import struct
 
 import email
 import ssl
-import transaction
+from taskc import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ class TaskdConnection(object):
             logger.info("Loading CA cert: %s", self.cacert_file)
             context.load_verify_locations(cafile=self.cacert_file)
         elif self.cacert:
-            print self.cacert  # TODO: Replace prints with logging
+            print(self.cacert)  # TODO: Replace prints with logging
             context.load_verify_locations(cadata=self.cacert)
 
         # enable for non-selfsigned certs

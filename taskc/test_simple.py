@@ -5,7 +5,7 @@ import time
 
 from docker import Client
 
-from simple import TaskdConnection
+from taskc.simple import TaskdConnection
 
 
 class TestRCParse(unittest.TestCase):
@@ -38,7 +38,7 @@ class TestConnection(unittest.TestCase):
         self.tc = TaskdConnection()
         o = self.docker.exec_start(our_exec['Id'])
         # print o
-        self.tc.uuid = o.split('\n')[0].split()[-1]
+        self.tc.uuid = o.split(b'\n')[0].split()[-1]
         # print self.tc.uuid
         self.tc.server = "localhost"
         c = self.docker.inspect_container("taskc_test")

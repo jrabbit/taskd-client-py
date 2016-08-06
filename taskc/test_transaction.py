@@ -1,6 +1,6 @@
 import unittest
 import email
-from transaction import TaskdResponse
+from taskc.transaction import TaskdResponse
 
 
 class TestTaskdResponse(unittest.TestCase):
