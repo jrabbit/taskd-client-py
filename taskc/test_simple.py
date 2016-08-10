@@ -1,7 +1,13 @@
 import unittest
 import os
 import time
+import uuid
 # import logging
+
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 
 from docker import Client
 
@@ -24,6 +30,40 @@ class TestRCParse(unittest.TestCase):
         self.assertEqual(self.tc.group, "Public")
         self.assertEqual(self.tc.username, "Jack Laxson")
         self.assertEqual(self.tc.uuid, "f60bfcb9-b7b8-4466-b4c1-7276b8afe609")
+
+class TestConnectionUnit(unittest.TestCase):
+
+    def setUp(self):
+        self.tc = TaskdConnection()
+        self.tc.server = "localhost"
+        self.tc.group = "Public"
+        self.tc.uuid = str(uuid.uuid4())
+        self.tc.username = "test_user"
+        self.tc.client_cert = "taskc/fixture/pki/client.cert.pem"
+        self.tc.client_key = "taskc/fixture/pki/client.key.pem"
+        self.tc.cacert_file = "taskc/fixture/pki/ca.cert.pem"
+
+    @mock.patch("taskc.simple.TaskdConnection.recv")
+    @mock.patch("taskc.simple.TaskdConnection.conn",  create=True)
+    @mock.patch("taskc.simple.TaskdConnection._mkmsg")
+    @mock.patch("taskc.simple.TaskdConnection._connect")
+    def test_pull(self, tdc_connect, mk_msg, conn, recv):
+        output = "timbo?"
+        recv.return_value = output
+        self.assertEquals(self.tc.pull(), output)
+        tdc_connect.assert_called_with()
+        mk_msg.assert_called_with('sync')
+
+    @mock.patch("taskc.simple.TaskdConnection.recv")
+    @mock.patch("taskc.simple.TaskdConnection.conn",  create=True)
+    # @mock.patch("taskc.transaction.prep_message")
+    @mock.patch("taskc.simple.TaskdConnection._connect")
+    def test_put(self, tdc_connect, conn, recv):
+        tasks = "{This is a task}\n{this is another task}"
+        self.tc.put(tasks)
+        # prep_msg.assert_
+        tdc_connect.assert_called_with()
+
 
 
 class TestConnection(unittest.TestCase):
