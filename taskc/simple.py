@@ -162,8 +162,8 @@ class TaskdConnection(object):
 
         tasks: flat formatted taskjson according to spec
         """
-
         msg = transaction.mk_message(self.group, self.username, self.uuid)
+        # returns a email.message.Message
         msg.set_payload(tasks)
         msg['type'] = 'sync'
         tx_msg = transaction.prep_message(msg)

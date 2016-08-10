@@ -28,8 +28,8 @@ def prep_message(msg):
 
     our_len = len(msg.as_string()) + 4
     size = struct.pack('>L', our_len)
-
-    return size + msg.as_string()
+    # why the hell is this "bytes" on python3?
+    return str(size) + msg.as_string()
 
 
 class TaskdResponse(Message):
