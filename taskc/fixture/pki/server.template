@@ -1,0 +1,6 @@
+organization = Colorless Green Ideas LLC
+cn = domain.example
+expiration_days = 365
+tls_www_server
+encryption_key
+signing_key

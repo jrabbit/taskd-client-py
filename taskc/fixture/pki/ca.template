@@ -1,0 +1,7 @@
+organization = Colorless Green Ideas LLC
+cn = domain.example CA
+country = US
+state = NY
+locality = NY
+expiration_days = 365
+ca

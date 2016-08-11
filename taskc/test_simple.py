@@ -2,7 +2,7 @@ import unittest
 import os
 import time
 import uuid
-# import logging
+import logging
 
 try:
     import unittest.mock as mock
@@ -10,6 +10,7 @@ except ImportError:
     import mock
 
 from docker import Client
+from docker.errors import APIError
 
 from taskc.simple import TaskdConnection
 
@@ -69,15 +70,24 @@ class TestConnectionUnit(unittest.TestCase):
 class TestConnection(unittest.TestCase):
 
     def setUp(self):
-        # logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.DEBUG)
         self.docker = Client(base_url='unix://var/run/docker.sock')
-        host_config = self.docker.create_host_config(publish_all_ports=True)
-        self.container = self.docker.create_container("jrabbit/taskd", name="taskc_test", host_config=host_config)
+        # self.volume_name = "taskc_fixture_pki"
+        try:
+            self.docker.remove_container("taskc_test", force=True)
+        except APIError as e:
+            logging.exception(e)
+        # volume = self.docker.create_volume(self.volume_name)
+        # logging.debug(volume)
+        pki_abs_path = os.path.abspath("taskc/fixture/pki")
+        host_config = self.docker.create_host_config(binds=['{}:/var/lib/taskd/pki'.format(pki_abs_path)],publish_all_ports=True)
+        self.container = self.docker.create_container("jrabbit/taskd", volumes=["/var/lib/taskd/pki"], name="taskc_test", host_config=host_config)
+        # print(self.container)
         self.docker.start(self.container["Id"])
         our_exec = self.docker.exec_create(self.container["Id"], "taskd add user Public test_user")
         self.tc = TaskdConnection()
         o = self.docker.exec_start(our_exec['Id'])
-        # print o
+        logging.debug(o)
         self.tc.uuid = o.split(b'\n')[0].split()[-1]
         # print self.tc.uuid
         self.tc.server = "localhost"
@@ -90,7 +100,8 @@ class TestConnection(unittest.TestCase):
         self.tc.client_cert = "taskc/fixture/pki/client.cert.pem"
         self.tc.client_key = "taskc/fixture/pki/client.key.pem"
         self.tc.cacert_file = "taskc/fixture/pki/ca.cert.pem"
-        time.sleep(2)
+        time.sleep(1)
+
     def test_connect(self):
 
         self.tc._connect()
@@ -112,7 +123,9 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         # might not be correct depends on state of taskd
     def tearDown(self):
+        print(self.docker.logs(self.container['Id'], stdout=True, stderr=True))
         self.docker.remove_container(self.container['Id'], force=True)
+        # self.docker.remove_volume(name=self.volume_name)
 
 # class TestStringIO(unittest.TestCase):
 #     def setUp(self):
