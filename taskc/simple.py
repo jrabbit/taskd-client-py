@@ -4,6 +4,7 @@ import socket
 import struct
 
 import email
+import six
 import ssl
 from taskc import transaction
 
@@ -97,19 +98,22 @@ class TaskdConnection(object):
         bytes_recd = 0
         while bytes_recd < bytes-4:
             chunk = self.conn.recv(min(bytes - bytes_recd, 2048))
-            if chunk == '':
+            if chunk == b'':
                 logger.error("socket connection broken")
             chunks.append(chunk)
             bytes_recd = bytes_recd + len(chunk)
-        msg = ''.join(chunks)
+        msg = b''.join(chunks)
 
         # logging data
         logger.info("%s Byte Response", bytes)
         logger.debug(msg)
 
         # parse the response
-        resp = email.message_from_string(
-            msg, _class=transaction.TaskdResponse)
+        if six.PY3:
+            resp = email.message_from_bytes(msg, _class=transaction.TaskdResponse)
+        else: 
+            resp = email.message_from_string(
+                msg, _class=transaction.TaskdResponse)
 
         if 'code' in resp:
             if int(resp['code']) >= 400:
@@ -164,8 +168,11 @@ class TaskdConnection(object):
         """
         msg = transaction.mk_message(self.group, self.username, self.uuid)
         # returns a email.message.Message
+        print(msg.as_string())
         msg.set_payload(tasks)
         msg['type'] = 'sync'
+        print(msg.as_string())
+        # logging.info(type(msg))
         tx_msg = transaction.prep_message(msg)
         self.conn.sendall(tx_msg)
 

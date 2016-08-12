@@ -1,18 +1,18 @@
-import unittest
+import logging
 import os
 import time
+import unittest
 import uuid
-import logging
+
+import six
+from docker import Client
+from docker.errors import APIError
+from taskc.simple import TaskdConnection
 
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-
-from docker import Client
-from docker.errors import APIError
-
-from taskc.simple import TaskdConnection
 
 
 class TestRCParse(unittest.TestCase):
@@ -51,7 +51,7 @@ class TestConnectionUnit(unittest.TestCase):
     def test_pull(self, tdc_connect, mk_msg, conn, recv):
         output = "timbo?"
         recv.return_value = output
-        self.assertEquals(self.tc.pull(), output)
+        self.assertEqual(self.tc.pull(), output)
         tdc_connect.assert_called_with()
         mk_msg.assert_called_with('sync')
 
@@ -70,13 +70,13 @@ class TestConnectionUnit(unittest.TestCase):
 class TestConnection(unittest.TestCase):
 
     def setUp(self):
-        logging.basicConfig(level=logging.DEBUG)
+        # logging.basicConfig(level=logging.DEBUG)
         self.docker = Client(base_url='unix://var/run/docker.sock')
         # self.volume_name = "taskc_fixture_pki"
         try:
             self.docker.remove_container("taskc_test", force=True)
         except APIError as e:
-            logging.exception(e)
+            logging.error(e)
         # volume = self.docker.create_volume(self.volume_name)
         # logging.debug(volume)
         pki_abs_path = os.path.abspath("taskc/fixture/pki")
@@ -88,8 +88,13 @@ class TestConnection(unittest.TestCase):
         self.tc = TaskdConnection()
         o = self.docker.exec_start(our_exec['Id'])
         logging.debug(o)
-        self.tc.uuid = o.split(b'\n')[0].split()[-1]
-        # print self.tc.uuid
+        #bytes
+        our_uuid = o.split(b'\n')[0].split()[-1]
+        if six.PY3:
+            our_uuid = our_uuid.decode("utf8")
+        self.tc.uuid = our_uuid
+        logging.debug("Type of uuid: %s", type(self.tc.uuid))
+
         self.tc.server = "localhost"
         c = self.docker.inspect_container("taskc_test")
         

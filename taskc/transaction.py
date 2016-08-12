@@ -1,6 +1,9 @@
 import struct
+import logging
 
 from email.message import Message
+
+import six
 
 from taskc.errors import TaskdError
 from taskc import __version__
@@ -25,12 +28,16 @@ def prep_message(msg):
     """
     Add the size header
     """
+    if six.PY3:
+        msg_out = msg.as_string().encode("utf-8")
+    else:
+        msg_out = msg.as_string()
 
-    our_len = len(msg.as_string()) + 4
+    our_len = len(msg_out) + 4
     size = struct.pack('>L', our_len)
     # why the hell is this "bytes" on python3?
-    return str(size) + msg.as_string()
 
+    return size + msg_out
 
 class TaskdResponse(Message):
 
