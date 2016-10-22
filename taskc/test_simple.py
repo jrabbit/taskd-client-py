@@ -14,6 +14,7 @@ try:
 except ImportError:
     import mock
 
+logging.basicConfig(level=logging.DEBUG)
 
 class TestRCParse(unittest.TestCase):
 
@@ -84,6 +85,7 @@ class TestConnection(unittest.TestCase):
         self.container = self.docker.create_container("jrabbit/taskd", volumes=["/var/lib/taskd/pki"], name="taskc_test", host_config=host_config)
         # print(self.container)
         self.docker.start(self.container["Id"])
+        time.sleep(1)
         our_exec = self.docker.exec_create(self.container["Id"], "taskd add user Public test_user")
         self.tc = TaskdConnection()
         o = self.docker.exec_start(our_exec['Id'])
