@@ -6,17 +6,38 @@ import struct
 import email
 import six
 import ssl
+
+import attr
+
 from taskc import transaction
 
 logger = logging.getLogger(__name__)
 
+def _is_path(instance, attribute, s, exists=True):
+    "Validator for path-yness"
+    if s == False:
+        # allow False as a default
+        return
+    if exists:
+        if os.path.exists(s):
+            return
+        else:
+            raise OSError("path does not exist")
+    else:
+        # how do we tell if it's a path if it doesn't exist?
+        raise TypeError("Not a path?")
 
+@attr.s
 class TaskdConnection(object):
-
-    def __init__(self, port=53589):
-        self.port = port
-        self.cacert_file = False
-        self.cacert = False
+    client_cert = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
+    client_key = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
+    cacert_file = attr.ib(validator=attr.validators.optional(_is_path),default=False)
+    server = attr.ib(default=None)
+    port = attr.ib(validator=attr.validators.instance_of(int), default=53589)
+    cacert  = attr.ib(default=False)
+    group = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
+    username = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
+    uuid = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
 
     def manage_connection(f):
         def conn_wrapper(self, *args, **kwargs):
@@ -73,7 +94,7 @@ class TaskdConnection(object):
             print(self.cacert)  # TODO: Replace prints with logging
             if six.PY2:
                 raise NotImplementedError
-            
+
             logger.info("Got CA cert as data/string type: %s", type(self.cacert))
             context.load_verify_locations(cadata=self.cacert)
 

@@ -147,5 +147,19 @@ class TestConnection(unittest.TestCase):
         self.docker.remove_container(self.container['Id'], force=True)
         # self.docker.remove_volume(name=self.volume_name)
 
+
+class TestAttrsInvoke(unittest.TestCase):
+    def test_invoke_connection(self):
+        options = dict()
+        options['server'] = "localhost"     
+        options['port'] = 53589
+        options['group'] = "Public"
+        options['username'] = "test_user"
+        options['client_cert'] = "taskc/fixture/pki/client.cert.pem"
+        options['client_key'] = "taskc/fixture/pki/client.key.pem"
+        options['cacert_file'] = "taskc/fixture/pki/ca.cert.pem"
+        our_tc = TaskdConnection(**options)
+
+
 if __name__ == '__main__':
     unittest.main()
