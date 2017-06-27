@@ -71,6 +71,10 @@ class TaskdConnection(object):
             context.load_verify_locations(cafile=self.cacert_file)
         elif self.cacert:
             print(self.cacert)  # TODO: Replace prints with logging
+            if six.PY2:
+                raise NotImplementedError
+            
+            logger.info("Got CA cert as data/string type: %s", type(self.cacert))
             context.load_verify_locations(cadata=self.cacert)
 
         # enable for non-selfsigned certs
