@@ -13,10 +13,8 @@ logger = logging.getLogger(__name__)
 
 class TaskdConnection(object):
 
-    def __init__(self, port=53589):
-        self.port = port
-        self.cacert_file = False
-        self.cacert = False
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
 
     def manage_connection(f):
         def conn_wrapper(self, *args, **kwargs):
