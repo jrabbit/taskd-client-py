@@ -182,8 +182,8 @@ class TaskdConnection(object):
 
         return self.recv()
 
-    def sync(self, sync_key):
-        """
-        Sync our tasks and server's, takes sync_key (uuid debounce from previous txn)
-        """
-        pass
+    # def sync(self, sync_key):
+    #     """
+    #     Sync our tasks and server's, takes sync_key (uuid debounce from previous txn)
+    #     """
+    #     pass

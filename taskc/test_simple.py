@@ -147,17 +147,5 @@ class TestConnection(unittest.TestCase):
         self.docker.remove_container(self.container['Id'], force=True)
         # self.docker.remove_volume(name=self.volume_name)
 
-# class TestStringIO(unittest.TestCase):
-#     def setUp(self):
-#         self.tc = TaskdConnection()
-#         self.tc.server = "localhost"
-#         self.tc.port = 53589
-#         self.tc.uuid = os.getenv("TEST_UUID")
-#         self.tc.group = "Public"
-#         self.tc.username = "test_user"
-#         self.tc.client_cert = "taskc/fixture/pki/client.cert.pem"
-#         self.tc.client_key = "taskc/fixture/pki/client.key.pem"
-#         self.tc.cacert_file = "taskc/fixture/pki/ca.cert.pem"
-
 if __name__ == '__main__':
     unittest.main()
