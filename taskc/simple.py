@@ -1,16 +1,14 @@
+from functools import wraps
+import email
 import logging
 import os.path
 import socket
 import struct
-
-import email
-import six
 import ssl
 
 import attr
-
+import six
 from taskc import transaction
-
 
 logger = logging.getLogger(__name__)
 
@@ -41,14 +39,12 @@ class TaskdConnection(object):
     uuid = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
 
     def manage_connection(f):
+        @wraps(f)
         def conn_wrapper(self, *args, **kwargs):
             self._connect()
             x = f(self, *args, **kwargs) # noqa
             self._close()
             return x
-        conn_wrapper.__name__ = f.__name__
-        conn_wrapper.__doc__ = f.__doc__
-        conn_wrapper.__dict__.update(f.__dict__)
         return conn_wrapper
 
     @classmethod
@@ -113,6 +109,8 @@ class TaskdConnection(object):
     def recv(self):
         """
         Parse out the size header & read the message
+
+        Returns :py:class:`taskc.transaction.TaskdResponse`
         """
 
         # receive data through the socket
@@ -172,6 +170,9 @@ class TaskdConnection(object):
     def stats(self):
         """
         Get some statistics from the server
+        
+        Returns :py:class:`taskc.transaction.TaskdResponse`
+
         """
 
         self.conn.sendall(self._mkmsg("statistics"))
@@ -182,6 +183,8 @@ class TaskdConnection(object):
     def pull(self):
         """
         Get all the tasks down from the server
+
+        Returns :py:class:`taskc.transaction.TaskdResponse`
         """
 
         self.conn.sendall(self._mkmsg("sync"))
@@ -194,6 +197,8 @@ class TaskdConnection(object):
         Push all our tasks to server
 
         tasks: flat formatted taskjson according to spec
+
+        Returns :py:class:`taskc.transaction.TaskdResponse`
         """
         msg = transaction.mk_message(self.group, self.username, self.uuid)
         # returns a email.message.Message

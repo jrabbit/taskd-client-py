@@ -58,10 +58,12 @@ class TaskdResponse(Message):
 
     @property
     def status_code(self):
+        "Status code as an int"
         return int(self.get("code"))
 
     @property
     def status(self):
+        "alias to status_code"
         return self.status_code
 
     def raise_for_status(self):
