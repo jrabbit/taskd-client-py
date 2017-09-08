@@ -8,8 +8,6 @@ import six
 import ssl
 
 import attr
-from decorator import decorator
-
 
 from taskc import transaction
 
@@ -48,6 +46,9 @@ class TaskdConnection(object):
             x = f(self, *args, **kwargs) # noqa
             self._close()
             return x
+        conn_wrapper.__name__ = f.__name__
+        conn_wrapper.__doc__ = f.__doc__
+        conn_wrapper.__dict__.update(f.__dict__)
         return conn_wrapper
 
     @classmethod
