@@ -130,17 +130,18 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         # might not be correct depends on state of taskd
 
-    def test_cadata(self):
-        "This doesn't work in python2.7??"
-        self.tc.cacert_file = False
-        with open("taskc/fixture/pki/ca.cert.pem") as ca:
-            self.tc.cacert = ca.read()
-        self.tc._connect()
-        # print self.tc.conn.getpeername()
-        self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', self.tc.port))
-        # make sure we're on TLS v2 per spec
-        self.assertEqual(self.tc.conn.context.protocol, 2)
-        self.tc.conn.close()
+    if six.PY3:
+        def test_cadata(self):
+            "This doesn't work in python2.7??"
+            self.tc.cacert_file = False
+            with open("taskc/fixture/pki/ca.cert.pem") as ca:
+                self.tc.cacert = ca.read()
+            self.tc._connect()
+            # print self.tc.conn.getpeername()
+            self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', self.tc.port))
+            # make sure we're on TLS v2 per spec
+            self.assertEqual(self.tc.conn.context.protocol, 2)
+            self.tc.conn.close()
 
     def tearDown(self):
         print(self.docker.logs(self.container['Id'], stdout=True, stderr=True))
