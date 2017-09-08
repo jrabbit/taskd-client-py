@@ -17,5 +17,6 @@ setup(name="taskc",
                    "Development Status :: 4 - Beta",
                    "Intended Audience :: Developers",
                    "Programming Language :: Python :: 2.7",
-                   "Programming Language :: Python :: 3.5"
+                   "Programming Language :: Python :: 3.5",
+                   "Programming Language :: Python :: 3.6"
                    ])
