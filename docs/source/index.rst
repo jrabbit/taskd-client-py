@@ -1,19 +1,15 @@
 .. taskc documentation master file, created by
-   sphinx-quickstart on Mon May 16 22:46:32 2016.
+   sphinx-quickstart on Fri Sep  8 08:56:56 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 Welcome to taskc's documentation!
 =================================
 
-Contents:
-
 .. toctree::
-   :maxdepth: 2
+   usage
+   api
 
-.. automodule:: taskc.simple
-    :members:
-    :undoc-members:
 
 
 Indices and tables
@@ -22,4 +18,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

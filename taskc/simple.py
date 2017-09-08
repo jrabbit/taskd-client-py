@@ -8,8 +8,11 @@ import six
 import ssl
 
 import attr
+from decorator import decorator
+
 
 from taskc import transaction
+
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +42,7 @@ class TaskdConnection(object):
     username = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
     uuid = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
 
+    @decorator
     def manage_connection(f):
         def conn_wrapper(self, *args, **kwargs):
             self._connect()
