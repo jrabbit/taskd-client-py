@@ -14,9 +14,7 @@ Getting Started
 * `pip install taskc`
 ```python 
 from taskc.simple import TaskdConnection
-tc = TaskdConnection()
 tc = TaskdConnection.from_taskrc() # only works if you have taskwarrior setup
-tc.connect()
 resp = tc.pull()
 ```
 
