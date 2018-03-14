@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d591cbb063b8e7ad1763f324005d716f9b8139758b2ace3d0d75c6ae2cc76c9c"
+            "sha256": "86f58718fa029a02a1e097ddebeb66c6e932a011f82c57b53876d987167f4061"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -43,6 +43,13 @@
         }
     },
     "develop": {
+        "backports.ssl-match-hostname": {
+            "hashes": [
+                "sha256:502ad98707319f4a51fa2ca1c677bd659008d27ded9f6380c79e8932e38dcdf2"
+            ],
+            "markers": "python_version < '3'",
+            "version": "==3.5.0.1"
+        },
         "certifi": {
             "hashes": [
                 "sha256:14131608ad2fd56836d33a71ee60fa1c82bc9d2c8d98b7bdbc631fe1b3cd1296",
@@ -111,6 +118,13 @@
                 "sha256:c7ab85de2894baff6ee8f15160cbbfa2fd3a04e56f0372c5793d24060687b299"
             ],
             "version": "==0.2.2"
+        },
+        "funcsigs": {
+            "hashes": [
+                "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
+                "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
+            ],
+            "version": "==1.0.2"
         },
         "idna": {
             "hashes": [
