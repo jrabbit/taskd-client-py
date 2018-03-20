@@ -28,15 +28,15 @@ def _is_path(instance, attribute, s, exists=True):
 
 @attr.s
 class TaskdConnection(object):
-    client_cert = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
-    client_key = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
+    client_cert = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
+    client_key = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
     cacert_file = attr.ib(validator=attr.validators.optional(_is_path),default=False)
     server = attr.ib(default=None)
-    port = attr.ib(validator=attr.validators.instance_of(int), default=53589)
+    port = attr.ib(validator=attr.validators.instance_of(int), type=int,  default=53589)
     cacert  = attr.ib(default=False)
-    group = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
-    username = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
-    uuid = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), default=None)
+    group = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
+    username = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
+    uuid = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
 
     def manage_connection(f):
         @wraps(f)
