@@ -12,9 +12,10 @@ from taskc import transaction
 
 logger = logging.getLogger(__name__)
 
+
 def _is_path(instance, attribute, s, exists=True):
     "Validator for path-yness"
-    if s == False:
+    if not s:
         # allow False as a default
         return
     if exists:
@@ -26,14 +27,15 @@ def _is_path(instance, attribute, s, exists=True):
         # how do we tell if it's a path if it doesn't exist?
         raise TypeError("Not a path?")
 
+
 @attr.s
 class TaskdConnection(object):
     client_cert = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
     client_key = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
-    cacert_file = attr.ib(validator=attr.validators.optional(_is_path),default=False)
+    cacert_file = attr.ib(validator=attr.validators.optional(_is_path), default=False)
     server = attr.ib(default=None)
-    port = attr.ib(validator=attr.validators.instance_of(int), type=int,  default=53589)
-    cacert  = attr.ib(default=False)
+    port = attr.ib(validator=attr.validators.instance_of(int), type=int, default=53589)
+    cacert = attr.ib(default=False)
     group = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
     username = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
     uuid = attr.ib(validator=attr.validators.optional(attr.validators.instance_of(str)), type=str, default=None)
@@ -123,7 +125,7 @@ class TaskdConnection(object):
         # This approach assumes taskd responses will not be paged
         chunks = []
         bytes_recd = 0
-        while bytes_recd < bytes-4:
+        while bytes_recd < bytes - 4:
             chunk = self.conn.recv(min(bytes - bytes_recd, 2048))
             if chunk == b'':
                 logger.error("socket connection broken")
@@ -138,7 +140,7 @@ class TaskdConnection(object):
         # parse the response
         if six.PY3:
             resp = email.message_from_bytes(msg, _class=transaction.TaskdResponse)
-        else: 
+        else:
             resp = email.message_from_string(
                 msg, _class=transaction.TaskdResponse)
 
@@ -170,7 +172,7 @@ class TaskdConnection(object):
     def stats(self):
         """
         Get some statistics from the server
-        
+
         Returns :py:class:`taskc.transaction.TaskdResponse`
 
         """

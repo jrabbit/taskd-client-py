@@ -11,6 +11,7 @@ docker-py = "*"
 coverage = "*"
 sphinx = "*"
 simplegeneric = {editable = true,path = "."}
+flake8 = "*"
 
 [packages]
 six = "*"
