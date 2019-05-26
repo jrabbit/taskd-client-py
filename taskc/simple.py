@@ -93,7 +93,7 @@ class TaskdConnection(object):
             logger.info("Loading CA cert: %s", self.cacert_file)
             context.load_verify_locations(cafile=self.cacert_file)
         elif self.cacert:
-            print(self.cacert)  # TODO: Replace prints with logging
+            logger.inf("cacert: %s", self.cacert)
             if six.PY2:
                 raise NotImplementedError
 
@@ -204,10 +204,10 @@ class TaskdConnection(object):
         """
         msg = transaction.mk_message(self.group, self.username, self.uuid)
         # returns a email.message.Message
-        print(msg.as_string())
+        logger.debug("email str: %s", msg.as_string())
         msg.set_payload(tasks)
         msg['type'] = 'sync'
-        print(msg.as_string())
+        logger.debug("final email str: %s", msg.as_string())
         # logging.info(type(msg))
         tx_msg = transaction.prep_message(msg)
         self.conn.sendall(tx_msg)
