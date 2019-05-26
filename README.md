@@ -1,6 +1,5 @@
 taskd-client-py
 ===============
-[![Code Health](https://landscape.io/github/jrabbit/taskd-client-py/master/landscape.svg?style=flat)](https://landscape.io/github/jrabbit/taskd-client-py/master)
 [![PyPI version](https://img.shields.io/pypi/v/taskc.svg)](https://pypi.python.org/pypi/taskc)
 [![Build Status](https://travis-ci.org/jrabbit/taskd-client-py.svg?branch=master)](https://travis-ci.org/jrabbit/taskd-client-py)
 
