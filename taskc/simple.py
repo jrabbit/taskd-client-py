@@ -69,12 +69,12 @@ class TaskdConnection(object):
             os.path.expanduser(taskrc)) if '=' in x and x[0] != "#"])
 
         # Set instance variables according to taskrc file
-        connection.client_cert = conf['taskd.certificate']
-        connection.client_key = conf['taskd.key']
+        connection.client_cert = os.path.expanduser(conf['taskd.certificate'])
+        connection.client_key = os.path.expanduser(conf['taskd.key'])
         connection.server = conf['taskd.server'].split(":")[-2]
         connection.port = int(conf['taskd.server'].split(":")[-1])
-        connection.cacert_file = conf[
-            'taskd.ca'] if 'taskd.ca' in conf else None
+        connection.cacert_file = os.path.expanduser(conf[
+            'taskd.ca']) if 'taskd.ca' in conf else None
         connection.group, connection.username, connection.uuid = conf[
             'taskd.credentials'].split("/")
 
