@@ -1,0 +1,16 @@
+include LICENSE
+include Pipfile Pipfile.lock
+include tox.ini
+recursive-include taskc *.ca
+recursive-include taskc *.client
+recursive-include taskc *.crl
+recursive-include taskc *.pem
+recursive-include taskc *.server
+recursive-include taskc *.taskrc
+recursive-include taskc *.template
+recursive-include taskc *.txt
+include taskc/fixture/pki/generate
+include taskc/fixture/pki/vars
+include taskc/fixture/pki/README
+include taskc/fixture/pki/check_expire
+recursive-include docs *.rst
