@@ -9,6 +9,7 @@ Welcome to taskc's documentation!
 .. toctree::
    usage
    api
+   changes
 
 
 
