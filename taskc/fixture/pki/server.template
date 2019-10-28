@@ -1,6 +1,6 @@
 organization = Colorless Green Ideas LLC
 cn = domain.example
-expiration_days = 365
+expiration_days = 1825
 tls_www_server
 encryption_key
 signing_key
