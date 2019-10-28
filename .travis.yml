@@ -12,7 +12,9 @@ before_install:
   - docker pull jrabbit/taskd
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install tox-travis coverage
-
+cache:
+  directories:
+    - $HOME/.cache/pypoetry/cache
 script:  tox
 
 after_success:
