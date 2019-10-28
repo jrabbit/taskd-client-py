@@ -71,7 +71,7 @@ class TestConnection(unittest.TestCase):
     def setUp(self):
         # logging.basicConfig(level=logging.DEBUG)
         self.docker = docker.from_env()
-        low_level_api = docker.APIClient(base_url='unix://var/run/docker.sock')
+        self.low_level_api = docker.APIClient(base_url='unix://var/run/docker.sock')
         # self.volume_name = "taskc_fixture_pki"
         try:
             self.docker.containers.get("taskc_test").remove(force=True)
@@ -90,7 +90,7 @@ class TestConnection(unittest.TestCase):
         logging.debug("Type of uuid: %s", type(self.tc.uuid))
 
         self.tc.server = "localhost"
-        c = low_level_api.inspect_container("taskc_test")
+        c = self.low_level_api.inspect_container("taskc_test")
 
         self.tc.port = int(c['NetworkSettings']['Ports']['53589/tcp'][0]['HostPort'])
         # self.tc.uuid = os.getenv("TEST_UUID")
@@ -134,7 +134,7 @@ class TestConnection(unittest.TestCase):
         self.tc.conn.close()
 
     def tearDown(self):
-        print(self.docker.logs(self.container['Id'], stdout=True, stderr=True))
+        print(self.low_level_api.logs(self.container['Id'], stdout=True, stderr=True))
         self.container.remove(force=True)
         # self.docker.remove_volume(name=self.volume_name)
 
