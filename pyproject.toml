@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "taskc"
+version = "0.1.0"
+description = "A python client library for taskwarrior's taskd"
+authors = ["Jack Laxson <jackjrabbit@gmail.com>"]
+license = "GPL-3.0+"
+repository = "https://github.com/jrabbit/taskd-client-py"
+documentation = "https://taskd-client-py.readthedocs.io/en/latest/"
+classifiers=["Development Status :: 4 - Beta",
+             "Intended Audience :: Developers"]
+
+[tool.poetry.dependencies]
+python = "^3.5"
+attrs = "*"
+six = "*"
+
+[tool.poetry.dev-dependencies]
+docker = "*"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
