@@ -134,7 +134,7 @@ class TestConnection(unittest.TestCase):
         self.tc.conn.close()
 
     def tearDown(self):
-        print(self.low_level_api.logs(self.container['Id'], stdout=True, stderr=True))
+        print(self.container.logs())
         self.container.remove(force=True)
         # self.docker.remove_volume(name=self.volume_name)
 
