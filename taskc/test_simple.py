@@ -3,18 +3,16 @@ import os
 import time
 import unittest
 import uuid
+import unittest.mock as mock
 
-import six
-from docker import Client
+import docker
 from docker.errors import APIError
+
 from taskc.simple import TaskdConnection
 
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
 
 logging.basicConfig(level=logging.INFO)
+
 
 class TestRCParse(unittest.TestCase):
 
@@ -32,6 +30,7 @@ class TestRCParse(unittest.TestCase):
         self.assertEqual(self.tc.group, "Public")
         self.assertEqual(self.tc.username, "Jack Laxson")
         self.assertEqual(self.tc.uuid, "f60bfcb9-b7b8-4466-b4c1-7276b8afe609")
+
 
 class TestConnectionUnit(unittest.TestCase):
 
@@ -67,39 +66,31 @@ class TestConnectionUnit(unittest.TestCase):
         tdc_connect.assert_called_with()
 
 
-
 class TestConnection(unittest.TestCase):
 
     def setUp(self):
         # logging.basicConfig(level=logging.DEBUG)
-        self.docker = Client(base_url='unix://var/run/docker.sock')
+        self.docker = docker.from_env()
         # self.volume_name = "taskc_fixture_pki"
         try:
-            self.docker.remove_container("taskc_test", force=True)
-        except APIError as e:
-            logging.error(e)
+            self.docker.containers.get("taskc_test").remove(force=True)
+        except APIError:
+            logging.exception("had problem removing the previous test container")
         # volume = self.docker.create_volume(self.volume_name)
         # logging.debug(volume)
         pki_abs_path = os.path.abspath("taskc/fixture/pki")
-        host_config = self.docker.create_host_config(binds=['{}:/var/lib/taskd/pki'.format(pki_abs_path)],publish_all_ports=True)
-        self.container = self.docker.create_container("jrabbit/taskd", volumes=["/var/lib/taskd/pki"], name="taskc_test", host_config=host_config)
+        self.container = self.docker.containers.create("jrabbit/taskd", volumes={pki_abs_path: {"bind": "/var/lib/taskd/pki", "mode": "rw"}}, name="taskc_test", publish_all_ports=True)
         # print(self.container)
-        self.docker.start(self.container["Id"])
+        self.container.start()
         time.sleep(1)
-        our_exec = self.docker.exec_create(self.container["Id"], "taskd add user Public test_user")
+        exit_code, o = self.container.exec_run("taskd add user Public test_user")
         self.tc = TaskdConnection()
-        o = self.docker.exec_start(our_exec['Id'])
-        logging.debug(o)
-        #bytes
-        our_uuid = o.split(b'\n')[0].split()[-1]
-        if six.PY3:
-            our_uuid = our_uuid.decode("utf8")
-        self.tc.uuid = our_uuid
+        self.tc.uuid = o.split(b'\n')[0].split()[-1].decode("utf8")  # this type assumption may be wrong in new docker.py
         logging.debug("Type of uuid: %s", type(self.tc.uuid))
 
         self.tc.server = "localhost"
         c = self.docker.inspect_container("taskc_test")
-        
+
         self.tc.port = int(c['NetworkSettings']['Ports']['53589/tcp'][0]['HostPort'])
         # self.tc.uuid = os.getenv("TEST_UUID")
         self.tc.group = "Public"
@@ -130,22 +121,20 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         # might not be correct depends on state of taskd
 
-    if six.PY3:
-        def test_cadata(self):
-            "This doesn't work in python2.7??"
-            self.tc.cacert_file = False
-            with open("taskc/fixture/pki/ca.cert.pem") as ca:
-                self.tc.cacert = ca.read()
-            self.tc._connect()
-            # print self.tc.conn.getpeername()
-            self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', self.tc.port))
-            # make sure we're on TLS v2 per spec
-            self.assertEqual(self.tc.conn.context.protocol, 2)
-            self.tc.conn.close()
+    def test_cadata(self):
+        self.tc.cacert_file = False
+        with open("taskc/fixture/pki/ca.cert.pem") as ca:
+            self.tc.cacert = ca.read()
+        self.tc._connect()
+        # print self.tc.conn.getpeername()
+        self.assertEqual(self.tc.conn.getpeername(), ('127.0.0.1', self.tc.port))
+        # make sure we're on TLS v2 per spec
+        self.assertEqual(self.tc.conn.context.protocol, 2)
+        self.tc.conn.close()
 
     def tearDown(self):
         print(self.docker.logs(self.container['Id'], stdout=True, stderr=True))
-        self.docker.remove_container(self.container['Id'], force=True)
+        self.container.remove(force=True)
         # self.docker.remove_volume(name=self.volume_name)
 
 
