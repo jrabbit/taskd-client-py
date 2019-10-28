@@ -6,8 +6,9 @@ authors = ["Jack Laxson <jackjrabbit@gmail.com>"]
 license = "GPL-3.0+"
 repository = "https://github.com/jrabbit/taskd-client-py"
 documentation = "https://taskd-client-py.readthedocs.io/en/latest/"
-classifiers=["Development Status :: 4 - Beta",
+classifiers = ["Development Status :: 4 - Beta",
              "Intended Audience :: Developers"]
+keywords = ["taskwarrior", "taskd", "client", "todo"]
 
 [tool.poetry.dependencies]
 python = "^3.5"

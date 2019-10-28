@@ -32,5 +32,6 @@ class TestTaskdResponse(unittest.TestCase):
         self.assertEqual(self.resp.status_code, 200)
         self.assertEqual(self.resp.data, payload)
 
+
 if __name__ == '__main__':
     unittest.main()

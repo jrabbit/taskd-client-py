@@ -11,7 +11,7 @@ before_install:
   - docker pull jrabbit/taskd
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install tox-travis coverage
-# command to run tests, e.g. python setup.py test
+
 script:  tox
 
 after_success:
