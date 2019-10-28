@@ -17,6 +17,8 @@ six = "*"
 
 [tool.poetry.dev-dependencies]
 docker = "*"
+coverage = "*"
+sphinx = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]
