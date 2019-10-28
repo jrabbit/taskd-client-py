@@ -71,11 +71,12 @@ class TestConnection(unittest.TestCase):
     def setUp(self):
         # logging.basicConfig(level=logging.DEBUG)
         self.docker = docker.from_env()
+        low_level_api = docker.APIClient(base_url='unix://var/run/docker.sock')
         # self.volume_name = "taskc_fixture_pki"
         try:
             self.docker.containers.get("taskc_test").remove(force=True)
         except APIError:
-            logging.exception("had problem removing the previous test container")
+            logging.exception("had problem removing the previous test container, it may not have existed!")
         # volume = self.docker.create_volume(self.volume_name)
         # logging.debug(volume)
         pki_abs_path = os.path.abspath("taskc/fixture/pki")
@@ -89,7 +90,7 @@ class TestConnection(unittest.TestCase):
         logging.debug("Type of uuid: %s", type(self.tc.uuid))
 
         self.tc.server = "localhost"
-        c = self.docker.inspect_container("taskc_test")
+        c = low_level_api.inspect_container("taskc_test")
 
         self.tc.port = int(c['NetworkSettings']['Ports']['53589/tcp'][0]['HostPort'])
         # self.tc.uuid = os.getenv("TEST_UUID")
