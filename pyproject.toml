@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "taskc"
-version = "0.1.0"
+version = "0.2.0"
 description = "A python client library for taskwarrior's taskd"
 authors = ["Jack Laxson <jackjrabbit@gmail.com>"]
 license = "LGPL-3.0+"

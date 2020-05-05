@@ -80,6 +80,8 @@ class TestConnection(unittest.TestCase):
         # volume = self.docker.create_volume(self.volume_name)
         # logging.debug(volume)
         pki_abs_path = os.path.abspath("taskc/fixture/pki")
+        # ensure jrabbit/taskd is pulled
+        self.docker.images.pull("jrabbit/taskd", tag="latest")
         self.container = self.docker.containers.create("jrabbit/taskd", volumes={pki_abs_path: {"bind": "/var/lib/taskd/pki", "mode": "rw"}}, name="taskc_test", publish_all_ports=True)
         # print(self.container)
         self.container.start()
